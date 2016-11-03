@@ -182,6 +182,7 @@ define(function (require, exports, module) {
             var queryInfo = _findBar.getQueryInfo(),
                 disableFindBar = FindUtils.isNodeSearchDisabled() || (replaceText ? true : false);
             if (queryInfo && queryInfo.query) {
+<<<<<<< HEAD
                 _findBar.enable(!disableFindBar);
                 StatusBar.showBusyIndicator(disableFindBar);
                 if (queryInfo.isRegexp) {
@@ -190,6 +191,10 @@ define(function (require, exports, module) {
                 if (queryInfo.isCaseSensitive) {
                     HealthLogger.searchDone(HealthLogger.SEARCH_CASE_SENSITIVE);
                 }
+=======
+                _findBar.enable(false);
+                StatusBar.showBusyIndicator(false); //node Search
+>>>>>>> adobe/abose/instant
 
                 var filter;
                 if (filterPicker) {
@@ -423,6 +428,10 @@ define(function (require, exports, module) {
                 FindInFiles.clearSearch();
             })
             .on("getNextPage", function () {
+<<<<<<< HEAD
+=======
+                //node search
+>>>>>>> adobe/abose/instant
                 FindInFiles.getNextPageofSearchResults().done(function () {
                     if (FindInFiles.searchModel.hasResults()) {
                         _resultsView.showNextPage();
@@ -430,6 +439,10 @@ define(function (require, exports, module) {
                 });
             })
             .on("getLastPage", function () {
+<<<<<<< HEAD
+=======
+                //node search
+>>>>>>> adobe/abose/instant
                 FindInFiles.getAllSearchResults().done(function () {
                     if (FindInFiles.searchModel.hasResults()) {
                         _resultsView.showLastPage();

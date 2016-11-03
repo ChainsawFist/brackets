@@ -38,9 +38,14 @@ define(function (require, exports, module) {
         MainViewManager    = require("view/MainViewManager"),
         Strings            = require("strings"),
         ViewUtils          = require("utils/ViewUtils"),
+<<<<<<< HEAD
         FindUtils          = require("search/FindUtils"),
         HealthLogger       = require("utils/HealthLogger");
 
+=======
+        FindUtils          = require("search/FindUtils");
+    
+>>>>>>> adobe/abose/instant
     /**
      * @private
      * The template we use for all Find bars.
@@ -225,7 +230,16 @@ define(function (require, exports, module) {
             $elem.attr("title", oldTitle + "(" + KeyBindingManager.formatKeyDescriptor(replaceShortcut.displayKey) + ")");
         }
     };
+<<<<<<< HEAD
 
+=======
+    
+    var lastTypedTime = 0,
+        currentTime = 0,
+        intervalId = 0,
+        hasSearchedForCurrentText = false;
+    
+>>>>>>> adobe/abose/instant
     /**
      * Opens the Find bar, closing any other existing Find bars.
      */
@@ -254,7 +268,11 @@ define(function (require, exports, module) {
             self.showError(null);
             self._modalBar = null;
             self._closed = true;
+<<<<<<< HEAD
             window.clearInterval(intervalId);
+=======
+            clearInterval(intervalId);
+>>>>>>> adobe/abose/instant
             intervalId = 0;
             lastTypedTime = 0;
             FindBar._removeFindBar(self);
@@ -279,35 +297,66 @@ define(function (require, exports, module) {
                 }
             })
             .on("keydown", "#find-what, #replace-with", function (e) {
+<<<<<<< HEAD
                 lastTypedTime = new Date().getTime();
                 lastKeyCode = e.keyCode;
                 var executeSearchIfNeeded = function () {
                     // We only do instant search via node.
                     if (FindUtils.isNodeSearchDisabled() || FindUtils.isInstantSearchDisabled()) {
                         // we still keep the intrval timer up as instant search could get enabled/disabled based on node busy state
+=======
+                hasSearchedForCurrentText = false;
+                var d = new Date();
+                lastTypedTime = d.getTime();
+                var executeSearchIfNeeded = function () {
+                    if (FindUtils.isInstantSearchDisabled()) {
+                        if (intervalId) {
+                            clearInterval(intervalId);
+                            intervalId = 0;
+                        }
+>>>>>>> adobe/abose/instant
                         return;
                     }
                     if (self._closed) {
                         return;
                     }
+<<<<<<< HEAD
                     currentTime = new Date().getTime();
                     if (lastTypedTime && (currentTime - lastTypedTime >= 100) && self.getQueryInfo().query !==  lastQueriedText &&
+=======
+                    d = new Date();
+                    currentTime = d.getTime();
+                    if (lastTypedTime && (currentTime - lastTypedTime >= 100) && !hasSearchedForCurrentText &&
+>>>>>>> adobe/abose/instant
                             !FindUtils.isNodeSearchInProgress()) {
                         // init Search
                         if (self._options.multifile) {
                             if ($(e.target).is("#find-what")) {
                                 if (!self._options.replace) {
+<<<<<<< HEAD
                                     HealthLogger.searchDone(HealthLogger.SEARCH_INSTANT);
                                     self.trigger("doFind");
                                     lastQueriedText = self.getQueryInfo().query;
+=======
+                                    console.log('search exec');
+                                    self.trigger("doFind");
+                                    hasSearchedForCurrentText = true;
+>>>>>>> adobe/abose/instant
                                 }
                             }
                         }
                     }
                 };
+<<<<<<< HEAD
                 if (intervalId === 0) {
                     intervalId = window.setInterval(executeSearchIfNeeded, 50);
                 }
+=======
+                if (intervalId === 0 && !FindUtils.isInstantSearchDisabled()) { // clear timer and disable instant search
+                    intervalId = setInterval(executeSearchIfNeeded, 50);
+                }
+            
+>>>>>>> adobe/abose/instant
                 if (e.keyCode === KeyEvent.DOM_VK_RETURN) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -475,8 +524,12 @@ define(function (require, exports, module) {
      * @param {boolean} enable Whether to enable or disable the controls.
      */
     FindBar.prototype.enable = function (enable) {
-        this.$("#find-what, #replace-with, #find-prev, #find-next, #find-case-sensitive, #find-regexp").prop("disabled", !enable);
-        this._enabled = enable;
+//        this.$("#find-what, #replace-with, #find-prev, #find-next, #find-case-sensitive, #find-regexp").prop("disabled", !enable);
+//        this._enabled = enable;
+    };
+    
+    FindBar.prototype.focus = function (enable) {
+        this.$("#find-what").focus();
     };
 
     FindBar.prototype.focus = function (enable) {

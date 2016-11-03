@@ -198,7 +198,11 @@ define(function (require, exports, module) {
      * @return {{files: number, matches: number}}
      */
     SearchModel.prototype.countFilesMatches = function () {
+<<<<<<< HEAD
         return {files: (this.numFiles || Object.keys(this.results).length), matches: this.numMatches};
+=======
+        return {files: (this.numFiles || Object.keys(this.results).length), matches: this.numMatches};  //Node search- this.numFiles
+>>>>>>> adobe/abose/instant
     };
 
     /**

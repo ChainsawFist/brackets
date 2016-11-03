@@ -23,6 +23,7 @@
 
 define(function (require, exports, module) {
     "use strict";
+<<<<<<< HEAD
 
     var Async               = require("utils/Async"),
         DocumentManager     = require("document/DocumentManager"),
@@ -68,6 +69,28 @@ define(function (require, exports, module) {
         return !PreferencesManager.get("findInFiles.instantSearch");
     }
 
+=======
+    
+    var Async           = require("utils/Async"),
+        DocumentManager = require("document/DocumentManager"),
+        MainViewManager = require("view/MainViewManager"),
+        FileSystem      = require("filesystem/FileSystem"),
+        FileUtils       = require("file/FileUtils"),
+        FileFilters     = require("search/FileFilters"),
+        FindBar         = require("search/FindBar").FindBar,
+        ProjectManager  = require("project/ProjectManager"),
+        EventDispatcher = require("utils/EventDispatcher"),
+        Strings         = require("strings"),
+        StringUtils     = require("utils/StringUtils"),
+        _               = require("thirdparty/lodash");
+    
+    var nodeSearchDisabled = false,
+        instantSearchDisabled = false,
+        nodeSearchCount = 0;
+
+    EventDispatcher.makeEventDispatcher(exports);
+
+>>>>>>> adobe/abose/instant
     /**
      * Given a replace string that contains $-expressions, replace them with data from the given
      * regexp match info.
@@ -335,12 +358,17 @@ define(function (require, exports, module) {
     }
 
      /**
+<<<<<<< HEAD
      * Prioritizes the open file and then the working set files to the starting of the list of files
+=======
+     * Prioritizes the open file to the starting of the list of files
+>>>>>>> adobe/abose/instant
      * @param {Array.<*>} files An array of file paths or file objects to sort
      * @param {?string} firstFile If specified, the path to the file that should be sorted to the top.
      * @return {Array.<*>}
      */
     function prioritizeOpenFile(files, firstFile) {
+<<<<<<< HEAD
         var workingSetFiles = MainViewManager.getWorkingSet(MainViewManager.ALL_PANES),
             workingSetFileFound = {},
             fileSetWithoutWorkingSet = [],
@@ -375,6 +403,18 @@ define(function (require, exports, module) {
             }
         }
         return startingWorkingFileSet.concat(fileSetWithoutWorkingSet);
+=======
+        var i, index = files.indexOf(firstFile);
+        if (index === -1) {
+            return files;
+        }
+        var temp = files[index];
+        for (i = index; i > 0; i--) {
+            files[i] = files[i - 1];
+        }
+        files[0] = temp;
+        return files;
+>>>>>>> adobe/abose/instant
     }
 
 
@@ -396,11 +436,18 @@ define(function (require, exports, module) {
     }
 
     /**
+<<<<<<< HEAD
      * if instant search is disabled, this will return true we can only do instant search through node
      * @return {boolean}
      */
     function isInstantSearchDisabled() {
         return _prefNodeSearchDisabled() || _prefInstantSearchDisabled() || nodeSearchDisabled || instantSearchDisabled;
+=======
+     * if instant search is disabled, this will return true
+     */
+    function isInstantSearchDisabled() {
+        return instantSearchDisabled;
+>>>>>>> adobe/abose/instant
     }
 
     /**
@@ -408,24 +455,38 @@ define(function (require, exports, module) {
      * @param {boolean} disable true to disable node based search
      */
     function setNodeSearchDisabled(disable) {
+<<<<<<< HEAD
         if (disable) {
             // only set disable. Enabling node earch doesnt mean we have to enable instant search.
             setInstantSearchDisabled(disable);
         }
+=======
+        setInstantSearchDisabled(disable);
+>>>>>>> adobe/abose/instant
         nodeSearchDisabled = disable;
     }
 
     /**
      * if node search is disabled, this will return true
+<<<<<<< HEAD
      * @return {boolean}
      */
     function isNodeSearchDisabled() {
         return _prefNodeSearchDisabled() || nodeSearchDisabled;
+=======
+     */
+    function isNodeSearchDisabled() {
+        return nodeSearchDisabled;
+>>>>>>> adobe/abose/instant
     }
 
     /**
      * check if a search is progressing in node
+<<<<<<< HEAD
      * @return {Boolean} true if search is processing in node
+=======
+     * @returns {Boolean} true if search is processing in node
+>>>>>>> adobe/abose/instant
      */
     function isNodeSearchInProgress() {
         if (nodeSearchCount === 0) {
@@ -466,6 +527,7 @@ define(function (require, exports, module) {
         nodeSearchCount--;
     }
 
+<<<<<<< HEAD
     /**
      * Notifies that a node has started indexing the files
      */
@@ -517,6 +579,8 @@ define(function (require, exports, module) {
         };
     }
 
+=======
+>>>>>>> adobe/abose/instant
     exports.parseDollars                    = parseDollars;
     exports.hasCheckedMatches               = hasCheckedMatches;
     exports.performReplacements             = performReplacements;
@@ -529,10 +593,13 @@ define(function (require, exports, module) {
     exports.setInstantSearchDisabled        = setInstantSearchDisabled;
     exports.isInstantSearchDisabled         = isInstantSearchDisabled;
     exports.isNodeSearchInProgress          = isNodeSearchInProgress;
+<<<<<<< HEAD
     exports.isIndexingInProgress            = isIndexingInProgress;
     exports.setCollapseResults              = setCollapseResults;
     exports.isCollapsedResults              = isCollapsedResults;
     exports.getHealthReport                 = getHealthReport;
+=======
+>>>>>>> adobe/abose/instant
     exports.ERROR_FILE_CHANGED              = "fileChanged";
 
     // event notification functions
@@ -540,13 +607,19 @@ define(function (require, exports, module) {
     exports.notifySearchScopeChanged        = notifySearchScopeChanged;
     exports.notifyNodeSearchStarted         = notifyNodeSearchStarted;
     exports.notifyNodeSearchFinished        = notifyNodeSearchFinished;
+<<<<<<< HEAD
     exports.notifyIndexingStarted           = notifyIndexingStarted;
     exports.notifyIndexingFinished          = notifyIndexingFinished;
+=======
+>>>>>>> adobe/abose/instant
 
     // events raised by FindUtils
     exports.SEARCH_FILE_FILTERS_CHANGED              = "fileFiltersChanged";
     exports.SEARCH_SCOPE_CHANGED                     = "searchScopeChanged";
+<<<<<<< HEAD
     exports.SEARCH_INDEXING_STARTED                  = "searchIndexingStarted";
     exports.SEARCH_INDEXING_FINISHED                 = "searchIndexingFinished";
     exports.SEARCH_COLLAPSE_RESULTS                  = "searchCollapseResults";
+=======
+>>>>>>> adobe/abose/instant
 });

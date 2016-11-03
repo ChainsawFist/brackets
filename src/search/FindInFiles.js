@@ -40,11 +40,18 @@ define(function (require, exports, module) {
         LanguageManager       = require("language/LanguageManager"),
         SearchModel           = require("search/SearchModel").SearchModel,
         PerfUtils             = require("utils/PerfUtils"),
+<<<<<<< HEAD
         NodeDomain            = require("utils/NodeDomain"),
         FileUtils             = require("file/FileUtils"),
         FindUtils             = require("search/FindUtils"),
         HealthLogger          = require("utils/HealthLogger");
 
+=======
+		NodeDomain            = require("utils/NodeDomain"),
+		FileUtils			  = require("file/FileUtils"),
+        FindUtils             = require("search/FindUtils");
+    
+>>>>>>> adobe/abose/instant
     var _bracketsPath   = FileUtils.getNativeBracketsDirectoryPath(),
         _modulePath     = FileUtils.getNativeModuleDirectoryPath(module),
         _nodePath       = "node/FindInFilesDomain",
@@ -74,7 +81,11 @@ define(function (require, exports, module) {
 
     /* Forward declarations */
     var _documentChangeHandler, _fileSystemChangeHandler, _fileNameChangeHandler, clearSearch;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> adobe/abose/instant
     /** Remove the listeners that were tracking potential search result changes */
     function _removeListeners() {
         DocumentModule.off("documentChange", _documentChangeHandler);
@@ -90,6 +101,7 @@ define(function (require, exports, module) {
         DocumentModule.on("documentChange", _documentChangeHandler);
         FileSystem.on("change", _fileSystemChangeHandler);
         DocumentManager.on("fileNameChange",  _fileNameChangeHandler);
+<<<<<<< HEAD
     }
 
     function nodeFileCacheComplete(event, numFiles, cacheSize) {
@@ -114,6 +126,13 @@ define(function (require, exports, module) {
         FindUtils.notifyIndexingFinished();
         HealthLogger.setProjectDetail(projectName, numFiles, cacheSize);
     }
+=======
+    }
+    
+    function nodeFileCacheComplete() {
+        FindUtils.setInstantSearchDisabled(false);
+    }
+>>>>>>> adobe/abose/instant
 
     /**
      * @private
@@ -432,6 +451,7 @@ define(function (require, exports, module) {
 
         return result.promise();
     }
+<<<<<<< HEAD
 
     /**
      * @private
@@ -439,6 +459,13 @@ define(function (require, exports, module) {
      * @param {string} docPath the path of the changed document
      */
     function _updateDocumentInNode(docPath) {
+=======
+    
+
+    //files added or removed
+    function updateDocumentInNode(docPath) {
+        //node search
+>>>>>>> adobe/abose/instant
         DocumentManager.getDocumentForPath(docPath).done(function (doc) {
             var updateObject = {
                     "filePath": docPath,
@@ -449,6 +476,7 @@ define(function (require, exports, module) {
     }
 
      /**
+<<<<<<< HEAD
      * @private
      * sends all changed documents that we have tracked to node
      */
@@ -457,6 +485,18 @@ define(function (require, exports, module) {
         for (key in changedFileList) {
             if (changedFileList.hasOwnProperty(key)) {
                 _updateDocumentInNode(key);
+=======
+     * Updates the result set with the files in the working set
+     */
+    function _updateChangedDocs() {
+        var files = MainViewManager.getWorkingSet(MainViewManager.ALL_PANES),
+            i = 0,
+            file = null,
+            key = null;
+        for (key in changedFileList) {
+            if (changedFileList.hasOwnProperty(key)) {
+                updateDocumentInNode(key);
+>>>>>>> adobe/abose/instant
             }
         }
     }
@@ -485,10 +525,15 @@ define(function (require, exports, module) {
 
         return candidateFilesPromise
             .then(function (fileListResult) {
+            
                 // Filter out files/folders that match user's current exclusion filter
                 fileListResult = FileFilters.filterFileList(filter, fileListResult);
 
+<<<<<<< HEAD
                 if (searchModel.isReplace || FindUtils.isNodeSearchDisabled()) {
+=======
+                if (searchModel.isReplace || FindUtils.isNodeSearchDisabled()) { //node Search
+>>>>>>> adobe/abose/instant
                     if (fileListResult.length) {
                         searchModel.allResultsAvailable = true;
                         return Async.doInParallel(fileListResult, _doSearchInOneFile);
@@ -496,9 +541,15 @@ define(function (require, exports, module) {
                         return ZERO_FILES_TO_SEARCH;
                     }
                 }
+<<<<<<< HEAD
 
                 var searchDeferred = new $.Deferred();
 
+=======
+            
+                var searchDeferred = new $.Deferred();
+                
+>>>>>>> adobe/abose/instant
                 if (fileListResult.length) {
                     var searchObject;
                     if (searchScopeChanged) {
@@ -527,16 +578,29 @@ define(function (require, exports, module) {
                         };
                     }
 
+<<<<<<< HEAD
                     if (searchModel.isReplace) {
                         searchObject.getAllResults = true;
                     }
+=======
+                    if (searchModel.isReplace) { //node Search
+                        searchObject.getAllResults = true;
+                    }
+
+>>>>>>> adobe/abose/instant
                     _updateChangedDocs();
                     FindUtils.notifyNodeSearchStarted();
                     searchDomain.exec("doSearch", searchObject)
                         .done(function (rcvd_object) {
                             FindUtils.notifyNodeSearchFinished();
+<<<<<<< HEAD
                             if (!rcvd_object || !rcvd_object.results) {
                                 console.log('no node falling back to brackets search');
+=======
+                            console.log('search completed');
+                            if (!rcvd_object || !rcvd_object.results) {
+                                console.log('no node');
+>>>>>>> adobe/abose/instant
                                 FindUtils.setNodeSearchDisabled(true);
                                 searchDeferred.fail();
                                 clearSearch();
@@ -545,6 +609,10 @@ define(function (require, exports, module) {
                             searchModel.results = rcvd_object.results;
                             searchModel.numMatches = rcvd_object.numMatches;
                             searchModel.numFiles = rcvd_object.numFiles;
+<<<<<<< HEAD
+=======
+//                            searchModel.foundMaximum = rcvd_object.foundMaximum;
+>>>>>>> adobe/abose/instant
                             searchModel.exceedsMaximum = rcvd_object.exceedsMaximum;
                             searchModel.allResultsAvailable = rcvd_object.allResultsAvailable;
                             searchDeferred.resolve();
@@ -554,7 +622,10 @@ define(function (require, exports, module) {
                             console.log('node fails');
                             FindUtils.setNodeSearchDisabled(true);
                             clearSearch();
+<<<<<<< HEAD
                             searchDeferred.reject();
+=======
+>>>>>>> adobe/abose/instant
                         });
                     return searchDeferred.promise();
                 } else {
@@ -564,7 +635,13 @@ define(function (require, exports, module) {
             .then(function (zeroFilesToken) {
                 exports._searchDone = true; // for unit tests
                 PerfUtils.addMeasurement(perfTimer);
+<<<<<<< HEAD
 
+=======
+                
+                findOrReplaceInProgress = true;
+                
+>>>>>>> adobe/abose/instant
                 if (zeroFilesToken === ZERO_FILES_TO_SEARCH) {
                     return zeroFilesToken;
                 } else {
@@ -634,15 +711,20 @@ define(function (require, exports, module) {
             exports._replaceDone = true;
         });
     }
+<<<<<<< HEAD
 
     /**
      * @private
      * Flags that the search scope has changed, so that the file list for the following search is recomputed
      */
+=======
+    
+>>>>>>> adobe/abose/instant
     var _searchScopeChanged = function () {
         searchScopeChanged = true;
     };
 
+<<<<<<< HEAD
     /**
      * Notify node that the results should be collapsed
      */
@@ -661,6 +743,12 @@ define(function (require, exports, module) {
         if (FindUtils.isNodeSearchDisabled() || fileList.length === 0) {
             return;
         }
+=======
+
+    //files added or removed
+    function filesChanged(fileList) {
+        //node search
+>>>>>>> adobe/abose/instant
         var updateObject = {
             "fileList": fileList
         };
@@ -671,6 +759,7 @@ define(function (require, exports, module) {
         searchDomain.exec("filesChanged", updateObject);
     }
 
+<<<<<<< HEAD
     /**
      * Inform node that the list of files have been removed.
      * @param {array} fileList The list of files that was removed.
@@ -679,6 +768,10 @@ define(function (require, exports, module) {
         if (FindUtils.isNodeSearchDisabled()) {
             return;
         }
+=======
+    function filesRemoved(fileList) {
+        //node search
+>>>>>>> adobe/abose/instant
         var updateObject = {
             "fileList": fileList
         };
@@ -779,7 +872,11 @@ define(function (require, exports, module) {
                     deferred.reject(err);
                     return;
                 }
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> adobe/abose/instant
                 //node Search : inform node about the file changes
                 filesChanged(addedFilePaths);
 
@@ -831,15 +928,19 @@ define(function (require, exports, module) {
         });
     };
 
+<<<<<<< HEAD
     /**
      * On project change, inform node about the new list of files that needs to be crawled.
      * Instant search is also disabled for the time being till the crawl is complete in node.
      */
+=======
+>>>>>>> adobe/abose/instant
     var _initCache = function () {
         function filter(file) {
             return _subtreeFilter(file, null) && _isReadableText(file.fullPath);
         }
         FindUtils.setInstantSearchDisabled(true);
+<<<<<<< HEAD
 
         //we always listen for filesytem changes.
         _addListeners();
@@ -870,6 +971,29 @@ define(function (require, exports, module) {
      * Gets the next page of search recults to append to the result set.
      * @return {object} A promise that's resolved with the search results or rejected when the find competes.
      */
+=======
+        ProjectManager.getAllFiles(filter, true)
+            .done(function (fileListResult) {
+                var files = fileListResult
+                    .filter(function (entry) {
+                        return entry.isFile && _isReadableText(entry.fullPath);
+                    })
+                    .map(function (entry) {
+                        return entry.fullPath;
+                    });
+                console.log('Starting cache creation');
+                searchDomain.exec("initCache", files)
+                    .done(function () {
+                        console.log('cache created');
+                    });
+            });
+        _searchScopeChanged();
+        //we always listen for filesytem changes.
+        _addListeners();
+    };
+
+
+>>>>>>> adobe/abose/instant
     function getNextPageofSearchResults() {
         var searchDeferred = $.Deferred();
         if (searchModel.allResultsAvailable) {
@@ -879,6 +1003,10 @@ define(function (require, exports, module) {
         FindUtils.notifyNodeSearchStarted();
         searchDomain.exec("nextPage")
             .done(function (rcvd_object) {
+<<<<<<< HEAD
+=======
+                console.log('search completed');
+>>>>>>> adobe/abose/instant
                 FindUtils.notifyNodeSearchFinished();
                 if (searchModel.results) {
                     var resultEntry;
@@ -890,6 +1018,16 @@ define(function (require, exports, module) {
                 } else {
                     searchModel.results = rcvd_object.results;
                 }
+<<<<<<< HEAD
+=======
+//                searchModel.numMatches = rcvd_object.numMatches;
+//                if (rcvd_object.numMatches === 0) {
+//                    searchModel.allResultsAvailable = true;
+//                }
+                //searchModel.foundMaximum = rcvd_object.foundMaximum;
+                //searchModel.exceedsMaximum = rcvd_object.exceedsMaximum;
+//                searchModel.numFiles = rcvd_object.numFiles;
+>>>>>>> adobe/abose/instant
                 searchModel.fireChanged();
                 searchDeferred.resolve();
             })
@@ -897,7 +1035,10 @@ define(function (require, exports, module) {
                 FindUtils.notifyNodeSearchFinished();
                 console.log('node fails');
                 FindUtils.setNodeSearchDisabled(true);
+<<<<<<< HEAD
                 searchDeferred.reject();
+=======
+>>>>>>> adobe/abose/instant
             });
         return searchDeferred.promise();
     }
@@ -911,10 +1052,19 @@ define(function (require, exports, module) {
         FindUtils.notifyNodeSearchStarted();
         searchDomain.exec("getAllResults")
             .done(function (rcvd_object) {
+<<<<<<< HEAD
+=======
+                //console.log("NUMMM "  + filelistnum);
+>>>>>>> adobe/abose/instant
                 FindUtils.notifyNodeSearchFinished();
                 searchModel.results = rcvd_object.results;
                 searchModel.numMatches = rcvd_object.numMatches;
                 searchModel.numFiles = rcvd_object.numFiles;
+<<<<<<< HEAD
+=======
+                //searchModel.foundMaximum = rcvd_object.foundMaximum;
+                //searchModel.exceedsMaximum = rcvd_object.exceedsMaximum;
+>>>>>>> adobe/abose/instant
                 searchModel.allResultsAvailable = true;
                 searchModel.fireChanged();
                 searchDeferred.resolve();
@@ -923,7 +1073,10 @@ define(function (require, exports, module) {
                 FindUtils.notifyNodeSearchFinished();
                 console.log('node fails');
                 FindUtils.setNodeSearchDisabled(true);
+<<<<<<< HEAD
                 searchDeferred.reject();
+=======
+>>>>>>> adobe/abose/instant
             });
         return searchDeferred.promise();
     }
@@ -931,9 +1084,14 @@ define(function (require, exports, module) {
     ProjectManager.on("projectOpen", _initCache);
     FindUtils.on(FindUtils.SEARCH_FILE_FILTERS_CHANGED, _searchScopeChanged);
     FindUtils.on(FindUtils.SEARCH_SCOPE_CHANGED, _searchScopeChanged);
+<<<<<<< HEAD
     FindUtils.on(FindUtils.SEARCH_COLLAPSE_RESULTS, _searchcollapseResults);
     searchDomain.on("crawlComplete", nodeFileCacheComplete);
 
+=======
+    searchDomain.on("crawlComplete", nodeFileCacheComplete);
+    
+>>>>>>> adobe/abose/instant
     // Public exports
     exports.searchModel            = searchModel;
     exports.doSearchInScope        = doSearchInScope;
@@ -943,7 +1101,11 @@ define(function (require, exports, module) {
     exports.ZERO_FILES_TO_SEARCH   = ZERO_FILES_TO_SEARCH;
     exports.getNextPageofSearchResults          = getNextPageofSearchResults;
     exports.getAllSearchResults    = getAllSearchResults;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> adobe/abose/instant
     // For unit tests only
     exports._documentChangeHandler = _documentChangeHandler;
     exports._fileNameChangeHandler = _fileNameChangeHandler;
