@@ -154,12 +154,22 @@ define(function (require, exports, module) {
 
         function handleDragOver(event) {
             event = event.originalEvent || event;
-            event.stopPropagation();
-            event.preventDefault();
             
             var files = event.dataTransfer.files;
-            if (files && files.length) {
 
+            var types = event.dataTransfer.types;
+            if(!files.length){// stop default behavior if a url is dragged in so the browser does not takeove
+                types.forEach(function (value){
+                    if(value == "text/uri-list"){ //plain text just has text/html
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return;
+                    }
+                });
+            }
+            if (files && files.length) {
+                event.stopPropagation();
+                event.preventDefault();
                 var dropEffect = "none";
 
                 // Don't allow drag-and-drop of files/folders when a modal dialog is showing.
@@ -172,11 +182,23 @@ define(function (require, exports, module) {
 
         function handleDrop(event) {
             event = event.originalEvent || event;
+             
+            var files = event.dataTransfer.files;
+
+            var types = event.dataTransfer.types; 
+            if(!files.length){ // stop default behavior if a url is dragged in so the browser does not takeove
+                types.forEach(function (value){
+                    if(value == "text/uri-list"){
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return;
+                    }
+                });
+            }
+            if (files && files.length) {
             event.stopPropagation(); //moved from inside below if-statement
             event.preventDefault(); //the default behavior and propagation should be stopped no matter what 
-            
-            var files = event.dataTransfer.files;
-            if (files && files.length) {
+           
                 brackets.app.getDroppedFiles(function (err, paths) {
                     if (!err) {
                         openDroppedFiles(paths);
