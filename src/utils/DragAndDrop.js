@@ -154,12 +154,22 @@ define(function (require, exports, module) {
 
         function handleDragOver(event) {
             event = event.originalEvent || event;
-            event.stopPropagation();
-            event.preventDefault();
+
+            var types = event.dataTransfer.types;
+            if(!files.length){ // stop urls from takingover
+                types.forEach(function (value){
+                    if(value == "text/uri-list"){ // plain text would not have this type, but would have text/plain and text/uri-list
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return;
+                    }
+                });
+            }
             
             var files = event.dataTransfer.files;
             if (files && files.length) {
-
+                event.stopPropagation();
+                event.preventDefault();
                 var dropEffect = "none";
 
                 // Don't allow drag-and-drop of files/folders when a modal dialog is showing.
@@ -172,11 +182,22 @@ define(function (require, exports, module) {
 
         function handleDrop(event) {
             event = event.originalEvent || event;
-            event.stopPropagation(); //moved from inside below if-statement
-            event.preventDefault(); //the default behavior and propagation should be stopped no matter what 
-            
+
+            var types = event.dataTransfer.types;
+            if(!files.length){ // stop urls from takingover
+                types.forEach(function (value){
+                    if(value == "text/uri-list"){ // plain text would not have this type, but would have text/plain and text/uri-list
+                        event.stopPropagation();
+                        event.preventDefault();
+                        return;
+                    }
+                });
+            }
+
             var files = event.dataTransfer.files;
             if (files && files.length) {
+                event.stopPropagation();
+                event.preventDefault();
                 brackets.app.getDroppedFiles(function (err, paths) {
                     if (!err) {
                         openDroppedFiles(paths);
