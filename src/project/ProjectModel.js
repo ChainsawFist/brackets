@@ -203,7 +203,7 @@ define(function (require, exports, module) {
                 d.reject(FileSystemError.ALREADY_EXISTS);
             } else {
                 if (isFolder) {
-                    var directory = FileSystem.getDirectoryForPath(path);
+                    var directory = fs; //FileSystem.getDirectoryForPath(path);
 
                     directory.create(function (err) {
                         if (err) {
@@ -214,7 +214,7 @@ define(function (require, exports, module) {
                     });
                 } else {
                     // Create an empty file
-                    var file = FileSystem.getFileForPath(path);
+                    var file = fs; //FileSystem.getFileForPath(path);
 
                     FileUtils.writeText(file, "").then(function () {
                         d.resolve(file);
