@@ -191,6 +191,8 @@ define(function (require, exports, module) {
         var d = new $.Deferred();
         var fs = _getFSObject(path);
 
+        var fs = _getFSObject(path);
+
         var name = FileUtils.getBaseName(path);
         if (!isValidFilename(name, _invalidChars)) {
             return d.reject(ERROR_INVALID_FILENAME).promise();
@@ -202,7 +204,7 @@ define(function (require, exports, module) {
                 d.reject(FileSystemError.ALREADY_EXISTS);
             } else {
                 if (isFolder) {
-                    var directory = FileSystem.getDirectoryForPath(path);
+                    var directory = fs; //FileSystem.getDirectoryForPath(path);
 
                     directory.create(function (err) {
                         if (err) {
@@ -213,7 +215,7 @@ define(function (require, exports, module) {
                     });
                 } else {
                     // Create an empty file
-                    var file = FileSystem.getFileForPath(path);
+                    var file = fs; //FileSystem.getFileForPath(path);
 
                     FileUtils.writeText(file, "").then(function () {
                         d.resolve(file);
