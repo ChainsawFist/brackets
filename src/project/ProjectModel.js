@@ -108,7 +108,7 @@ define(function (require, exports, module) {
      * @private
      * @see #shouldShow
      */
-    function _shouldShowName(name, path) { // TODO: Refactor this into a function that can also see if the name is a file
+    function _shouldShowName(name, path) { 
         if(path){
             var fs = _getFSObject(path);
             //fs.FileSystem.resolve(path+"/", function (err, entry, stat){});
